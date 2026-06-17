@@ -1,3 +1,3 @@
 # toolkits
 
-my `nix develop git+https://codeberg.org/slaxor/toolkits#whatever` conveniences 
+my `nix flake new -t git+https://codeberg.org/slaxor/templates#rust-rp2040 ~/proj/blinky-test` conveniences 

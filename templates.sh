@@ -32,15 +32,14 @@ proj-new() {
     done
     git init -q
 
+    printf 'use flake\n' >.envrc
+    git add .
+
     if ! command -v direnv >/dev/null; then
       printf 'proj-new: direnv not on PATH, skipping allow\n' >&2
       exit 0
     fi
     direnv allow .
-    if direnv exec . true >/dev/null 2>&1; then
-      printf 'proj-new: direnv allowed and active\n'
-    else
-      printf 'proj-new: direnv allow ran but the dir is still blocked, check manually\n' >&2
-    fi
+    direnv status | grep -i allow
   )
 }

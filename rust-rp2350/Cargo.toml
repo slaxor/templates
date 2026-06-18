@@ -1,0 +1,22 @@
+[package]
+name = "__PROJECT_NAME__"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-only"
+
+[[bin]]
+name = "__PROJECT_NAME__"
+path = "src/main.rs"
+test = false
+doctest = false
+bench = false
+
+[dependencies]
+rp235x-hal = { version = "0.4.0", features = ["critical-section-impl", "binary-info"] }
+embedded-hal = "1.0"
+panic-halt = "1.0.0"
+
+[profile.release]
+debug = 2
+lto = true
+opt-level = "s"

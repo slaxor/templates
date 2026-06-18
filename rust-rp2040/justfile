@@ -1,0 +1,8 @@
+build:
+    cargo build --release
+
+run:
+    cargo run --release
+
+doc:
+    cargo doc --workspace --no-deps --open

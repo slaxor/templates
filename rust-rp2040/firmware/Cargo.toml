@@ -14,7 +14,7 @@ bench = false
 [dependencies]
 __PROJECT_NAME__ = { path = "../lib" }
 
-embassy-executor = { version = "0.10.0", features = ["arch-cortex-m", "executor-thread"] }
+embassy-executor = { version = "0.10.0", features = ["platform-cortex-m", "executor-thread"] }
 embassy-rp = { version = "0.10.0", features = ["defmt", "time-driver", "critical-section-impl", "rp2040"] }
 embassy-time = { version = "0.5.1" }
 

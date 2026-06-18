@@ -3,3 +3,9 @@ build:
 
 watch:
     typst watch main.typ __PROJECT_NAME__.pdf --font-path fonts/
+
+fmt:
+    typstyle --check main.typ lib.typ
+
+fix:
+    typstyle -i main.typ lib.typ

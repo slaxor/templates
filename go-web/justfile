@@ -7,5 +7,15 @@ build:
 doc:
     go doc -all ./core
 
+fmt:
+    golangci-lint fmt
+
+lint:
+    golangci-lint run
+
+fix:
+    golangci-lint run --fix
+    golangci-lint fmt
+
 run:
     go run ./cmd/__PROJECT_NAME__

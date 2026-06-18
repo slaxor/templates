@@ -4,6 +4,12 @@ test:
 lint:
     shellcheck __PROJECT_NAME__ lib/*.sh
 
+fmt:
+    shfmt -i 4 -l -d __PROJECT_NAME__ lib/*.sh
+
+fix:
+    shfmt -i 4 -w __PROJECT_NAME__ lib/*.sh
+
 doc:
     awk '/^#/{c=c $0 "\n"; next} /^[a-z_]+\(\)/{print c $0; c=""} {c=""}' lib/*.sh
 

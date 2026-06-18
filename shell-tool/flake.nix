@@ -6,7 +6,7 @@
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
     in {
       devShells.x86_64-linux.default = pkgs.mkShell {
-        packages = [ pkgs.bash pkgs.bats pkgs.shellcheck pkgs.just ];
+        packages = [ pkgs.bash pkgs.bats pkgs.shellcheck pkgs.shfmt pkgs.just ];
       };
     };
 }

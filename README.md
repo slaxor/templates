@@ -50,9 +50,30 @@ flowchart TD
     class R,S,T,U,V workflow
 ```
 
+or use this
 
-or use this and
+```nix
+{ pkgs, ... }:
+let
+  mkprj = pkgs.writeShellApplication {
+    name = "mkprj";
+    runtimeInputs = [
+      pkgs.nix
+      pkgs.git
+      pkgs.direnv
+      pkgs.jq
+    ];
+    text = builtins.readFile [./mkprj.sh]; 
+  };
+in
+{
+  home.packages = with pkgs; [ mkprj ];
+}
+```
+[mkprj](mkprj.sh)
 
+
+work like this:)
 ```mermaid
 ---
 config:

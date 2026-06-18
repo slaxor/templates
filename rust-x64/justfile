@@ -1,0 +1,11 @@
+test:
+    cargo test --workspace
+
+build:
+    cargo build --workspace --release
+
+doc:
+    cargo doc --workspace --no-deps --open
+
+run *args:
+    cargo run -p __PROJECT_NAME__-cli -- {{args}}

@@ -1,0 +1,12 @@
+[package]
+name = "__PROJECT_NAME__-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "__PROJECT_NAME__"
+path = "src/main.rs"
+
+[dependencies]
+__PROJECT_NAME__ = { path = "../lib" }

@@ -1,0 +1,11 @@
+test:
+    go test ./...
+
+build:
+    go build -o bin/__PROJECT_NAME__ ./cmd/__PROJECT_NAME__
+
+doc:
+    go doc -all ./core
+
+run *args:
+    go run ./cmd/__PROJECT_NAME__ {{args}}

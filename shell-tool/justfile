@@ -1,0 +1,11 @@
+test:
+    bats tests/
+
+lint:
+    shellcheck __PROJECT_NAME__ lib/*.sh
+
+doc:
+    awk '/^#/{c=c $0 "\n"; next} /^[a-z_]+\(\)/{print c $0; c=""} {c=""}' lib/*.sh
+
+run *args:
+    ./__PROJECT_NAME__ {{args}}

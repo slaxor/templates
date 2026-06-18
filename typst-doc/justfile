@@ -1,0 +1,5 @@
+build:
+    typst compile main.typ __PROJECT_NAME__.pdf --font-path fonts/
+
+watch:
+    typst watch main.typ __PROJECT_NAME__.pdf --font-path fonts/

@@ -6,6 +6,14 @@
         path = ./rust-x64;
         description = "Plain Rust, native x86_64";
       };
+      rust-rp2040 = {
+        path = ./rust-rp2040;
+        description = "Rust for RaspberryPi Pico (rp2040)";
+      };
+      rust-rp2350 = {
+        path = ./rust-rp2350;
+        description = "Rust for RaspberryPi Pico [W] (rp2350)";
+      };
       go-cli = {
         path = ./go-cli;
         description = "Plain go, native x86_64";

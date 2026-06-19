@@ -1,0 +1,11 @@
+[workspace]
+resolver = "2"
+members = ["firmware", "lib"]
+
+[profile.release]
+lto = "off"
+opt-level = 3
+strip = false
+
+[profile.dev]
+lto = "off"

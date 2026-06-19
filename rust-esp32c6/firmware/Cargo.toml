@@ -1,0 +1,25 @@
+[package]
+name = "__PROJECT_NAME__-firmware"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "__PROJECT_NAME__"
+path = "src/main.rs"
+test = false
+doctest = false
+bench = false
+
+[dependencies]
+__PROJECT_NAME__ = { path = "../lib" }
+
+esp-hal = { version = "~1.1.0", features = ["esp32c6", "unstable"] }
+esp-rtos = { version = "0.3.0", features = ["embassy", "esp32c6"] }
+esp-bootloader-esp-idf = { version = "0.5.0", features = ["esp32c6"] }
+
+embassy-executor = "0.10.0"
+embassy-time = "0.5.1"
+
+esp-backtrace = { version = "0.19.0", features = ["esp32c6", "panic-handler", "println"] }
+esp-println = { version = "0.17.0", features = ["esp32c6"] }

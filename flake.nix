@@ -6,6 +6,14 @@
         path = ./rust-x64;
         description = "Plain Rust, native x86_64";
       };
+      rust-esp32c6 = {
+        path = ./rust-esp32c6;
+        description = "Rust for ESP32C6";
+      };
+      rust-esp32s3 = {
+        path = ./rust-esp32s3;
+        description = "Rust for ESP32S3";
+      };
       rust-rp2040 = {
         path = ./rust-rp2040;
         description = "Rust for RaspberryPi Pico (rp2040)";

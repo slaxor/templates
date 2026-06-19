@@ -1,0 +1,14 @@
+build:
+    cargo build --release
+
+flash: build
+    cargo run --release
+
+fmt:
+    cargo fmt --all
+
+lint:
+    cargo clippy --all-targets -- -D warnings
+
+fix:
+    cargo clippy --fix --allow-dirty --all-targets

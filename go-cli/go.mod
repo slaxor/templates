@@ -1,4 +1,4 @@
-module codeberg.org/slaxor/__PROJECT_NAME__
+module github.com/slaxor/__PROJECT_NAME__
 
 go 1.22
 

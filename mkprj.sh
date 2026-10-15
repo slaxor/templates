@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash
-# mkprj: scaffold projects from codeberg.org/slaxor/templates.
+# mkprj: scaffold projects from github.com/slaxor/templates.
 set -xuo pipefail
 
-repo="${repo-git+https://codeberg.org/slaxor/templates}"
+repo="${repo-git+https://github.com/slaxor/templates}"
 
 # mkprj_usage prints the top-level usage summary.
 mkprj_usage() {

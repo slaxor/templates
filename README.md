@@ -50,7 +50,7 @@ in-place placeholder substitution
 
 Clone this repo and make the script available:
 
-git clone https://codeberg.org/slaxor/templates.git
+git clone https://github.com/slaxor/templates.git
 cd templates
 chmod +x mkprj.sh
 

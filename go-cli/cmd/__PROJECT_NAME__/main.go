@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"codeberg.org/slaxor/__PROJECT_NAME__/core"
+	"github.com/slaxor/__PROJECT_NAME__/core"
 )
 
 func main() {

@@ -1,10 +1,11 @@
 {
   description = "__PROJECT_NAME__";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     rust-overlay.url = "github:oxalica/rust-overlay";
   };
-  outputs = { nixpkgs, rust-overlay, ... }:
+  outputs =
+    { nixpkgs, rust-overlay, ... }:
     let
       pkgs = import nixpkgs {
         system = "x86_64-linux";
@@ -12,11 +13,21 @@
       };
       rust = pkgs.rust-bin.stable.latest.default.override {
         targets = [ "thumbv6m-none-eabi" ];
-        extensions = [ "rust-src" "rust-analyzer" ];
+        extensions = [
+          "rust-src"
+          "rust-analyzer"
+        ];
       };
-    in {
+    in
+    {
       devShells.x86_64-linux.default = pkgs.mkShell {
-        packages = [ rust pkgs.just pkgs.probe-rs-tools pkgs.flip-link ];
+        packages = with pkgs; [
+          rust
+          llvm
+          just
+          probe-rs-tools
+          flip-link
+        ];
       };
     };
 }

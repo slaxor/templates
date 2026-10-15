@@ -3,7 +3,7 @@ target = "xtensa-esp32s3-none-elf"
 
 [target.xtensa-esp32s3-none-elf]
 linker = "xtensa-esp32s3-elf-gcc"
-runner = "espflash flash --monitor --ignore-app-descriptor"
+runner = "espflash flash --monitor"
 rustflags = [
     "-C", "link-arg=-nostartfiles",
     "-C", "link-arg=-Wl,-Tlinkall.x",

@@ -1,0 +1,24 @@
+[package]
+name = "firmware"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+esp-hal = { version = "1.1", features = ["esp32s3", "unstable"] }
+esp-backtrace = { version = "0.19", features = ["esp32s3", "panic-handler", "println"] }
+esp-println = { version = "0.17", features = ["esp32s3"] }
+esp-bootloader-esp-idf = { version = "0.5", features = ["esp32s3"] }
+
+# async runtime for the work window
+esp-rtos = { version = "0.3", features = ["esp32s3", "esp-radio", "esp-alloc", "embassy"] }
+esp-radio = { version = "0.16", default-features = false, features = ["esp32s3"] }
+esp-alloc = "0.8"
+embassy-time = "0.5"
+embassy-executor = "0.9"
+
+lib = { path = "../lib", features = ["wifi", "bt", "i2c-scan"] }
+
+[[bin]]
+name = "firmware"
+test = false
+bench = false

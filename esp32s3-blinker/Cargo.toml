@@ -1,0 +1,16 @@
+[workspace]
+resolver = "2"
+members = ["firmware", "lib"]
+
+[profile.release]
+lto = "off"
+opt-level = 3
+strip = false
+
+[profile.dev]
+lto = "off"
+opt-level = 2
+
+# esp-radio wants opt-level 3 even in dev builds or it can misbehave at runtime
+[profile.dev.package.esp-radio]
+opt-level = 3

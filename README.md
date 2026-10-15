@@ -18,20 +18,24 @@ Rust environment for ESP32-C6 embedded development
 rust-esp32s3
 Rust environment for ESP32-S3 embedded development
 rust-rp2040
-Rust setup for Raspberry Pi Pico (RP2040)
+Rust setup for Raspberry Pi Pico \(RP2040\)
 rust-rp2350
-Rust setup for Raspberry Pi Pico W (RP2350)
+Rust setup for Raspberry Pi Pico W \(RP2350\)
+rust-stm32f1
+Rust for STM32F1 / Blue Pill \(STM32F103C8T6\)
 Go
 go-cli
 Minimal Go CLI project for native development
 go-web
 Go web service using chi router with logging middleware
 Other
+platformio-stm32 
+PlatformIO for STM32F103C8T6 Blue Pill
 shell-tool
 Standard Bash-based development environment
 typst-doc
 Typst document environment for writing and building .typst files
-🚀 Recommended Workflow (mkprj)
+🚀 Recommended Workflow \(mkprj\)
 
 This repository includes a helper script: mkprj
 

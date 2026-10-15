@@ -1,0 +1,24 @@
+[package]
+name = "__PROJECT_NAME__-firmware"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+build = "build.rs"
+
+[[bin]]
+name = "__PROJECT_NAME__"
+path = "src/main.rs"
+test = false
+doctest = false
+bench = false
+
+[dependencies]
+__PROJECT_NAME__ = { path = "../lib" }
+cortex-m = "0.7.7"
+cortex-m-rt = "0.7.5"
+embedded-hal = "0.2.7"
+stm32f1xx-hal = { version = "0.10.0", features = ["stm32f103", "medium"] }
+panic-halt = "0.2.0"
+
+[build-dependencies]
+cortex-m-rt = "0.7.5"

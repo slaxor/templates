@@ -1,0 +1,13 @@
+default: build
+
+build:
+    pio run
+
+flash:
+    pio run --target upload
+
+clean:
+    pio run --target clean
+
+monitor:
+    pio device monitor --baud 115200

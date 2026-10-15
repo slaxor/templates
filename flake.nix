@@ -22,6 +22,10 @@
         path = ./rust-rp2350;
         description = "Rust for RaspberryPi Pico [W] (rp2350)";
       };
+      rust-stm32f1 = {
+        path = ./rust-stm32f1;
+        description = "Rust for STM32F1 / Blue Pill (STM32F103C8T6)";
+      };
       go-cli = {
         path = ./go-cli;
         description = "Plain go, native x86_64";
@@ -29,6 +33,10 @@
       go-web = {
         path = ./go-web;
         description = "Go web service, chi router + logging middleware";
+      };
+      platformio-stm32 = {
+        path = ./platformio-stm32;
+        description = "PlatformIO for STM32F103C8T6 Blue Pill";
       };
       shell-tool = {
         path = ./shell-tool;

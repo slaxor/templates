@@ -1,0 +1,19 @@
+default: build
+
+build:
+    cargo build --release
+
+flash:
+    cargo run --release
+
+test:
+    cargo test -p __PROJECT_NAME__ --target x86_64-unknown-linux-gnu
+
+fmt:
+    cargo fmt --all
+
+lint:
+    cargo clippy --workspace --all-targets -- -D warnings
+
+clean:
+    cargo clean

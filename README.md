@@ -33,6 +33,8 @@ platformio-stm32
 PlatformIO for STM32F103C8T6 Blue Pill
 shell-tool
 Standard Bash-based development environment
+static-web
+Static website with Zola, optional fediverse feed
 typst-doc
 Typst document environment for writing and building .typst files
 🚀 Recommended Workflow \(mkprj\)
@@ -88,6 +90,44 @@ creates a .envrc with:
 use flake
 
 If direnv is installed, it will automatically run direnv allow .
+
+🧩 Template parameters
+
+A template may ship a `mkprj.params` file, one parameter per line:
+
+```
+KEY|default|prompt
+```
+
+mkprj asks for each value (Enter takes the default; without a terminal the
+default is used silently), replaces `__KEY__` in contents and filenames, and
+deletes the file. Defaults may use `__PROJECT_NAME__`. Answer up front with:
+
+```sh
+mkprj new --set SITE_URL=https://slaxor.de static-web slaxor.de
+```
+
+Unknown keys abort and remove the half-created project.
+
+🧩 Template parameters
+
+A template may ship a `mkprj.params` file, one parameter per line:
+
+```
+KEY|default|prompt
+```
+
+mkprj asks for each value (Enter takes the default; without a terminal the
+default is used silently), replaces `__KEY__` in contents and filenames, and
+deletes the file. Each answer also exists as `__KEY_SLUG__` (lower case,
+DNS-safe), and defaults may use `__PROJECT_NAME__` and earlier answers.
+Answer up front with:
+
+```sh
+mkprj new --set NAMESPACE=web static-web slaxor.de
+```
+
+Unknown keys abort and remove the half-created project.
 
 🧪 Example
 mkprj new rust-esp32s3 sensor-node

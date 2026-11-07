@@ -1,0 +1,22 @@
+oci := env("OCI", "podman")
+image := "__IMAGE__"
+
+serve:
+    zola serve --drafts
+
+build:
+    zola build
+
+check:
+    zola check
+
+image: build
+    {{oci}} build -t {{image}} -f Containerfile .
+
+push: image
+    {{oci}} push {{image}}
+
+deploy: push
+    kubectl apply -f k8s.yaml
+    kubectl -n __NAMESPACE__ rollout restart deployment/web
+    kubectl -n __NAMESPACE__ rollout status deployment/web

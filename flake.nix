@@ -42,6 +42,10 @@
         path = ./shell-tool;
         description = "Standard Bash env";
       };
+      static-web = {
+        path = ./static-web;
+        description = "Static website with Zola, optional fediverse feed";
+      };
       typst-doc = {
         path = ./typst-doc;
         description = "Standard env for a Typst document";

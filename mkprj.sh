@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash
 # mkprj: scaffold projects from github.com/slaxor/templates.
-set -xuo pipefail
+set -uo pipefail
 
 repo="${repo-git+https://github.com/slaxor/templates}"
+params_file="mkprj.params"
+declare -A overrides=() answers=()
 
 # mkprj_usage prints the top-level usage summary.
 mkprj_usage() {
@@ -11,9 +13,16 @@ mkprj_usage() {
 usage: mkprj <command> [args]
 
 commands:
-  new [--refresh] <template> <dest-path>   scaffold a new project at dest-path
+  new [--refresh] [--set KEY=VALUE]... <template> <dest-path>
+                                           scaffold a new project at dest-path
   list [--refresh]                         list available template names
   help                                      show this message
+
+Templates may ship a mkprj.params file with lines of KEY|default|prompt.
+mkprj asks for each value (or takes the default when stdin is not a
+terminal), replaces __KEY__ in contents and filenames, then deletes the
+file. Every answer is also available as __KEY_SLUG__ (DNS-safe), and
+defaults may use earlier answers. --set KEY=VALUE answers up front.
 
 nix caches the resolved revision of a remote flake ref, so after pushing
 new templates to the repo, mkprj may not see them until the cache expires.
@@ -37,17 +46,106 @@ mkprj_sanitize() {
   basename "$1" | tr '-' '_'
 }
 
-# mkprj_substitute rewrites __PROJECT_NAME__ in file contents and
+# mkprj_sed_escape escapes a value for use as a sed replacement with |
+# as delimiter, so URLs and paths survive.
+mkprj_sed_escape() {
+  printf '%s' "$1" | sed -e 's/[\\&|]/\\&/g'
+}
+
+# mkprj_substitute rewrites __KEY__ with value in file contents and
 # filenames under the given directory, in place.
 mkprj_substitute() {
-  local dir="$1" name="$2"
+  local dir="$1" key="$2" value="$3"
+  local placeholder="__${key}__" escaped
+  escaped="$(mkprj_sed_escape "${value}")"
   (
     cd "${dir}" || exit 1
-    grep -rlZ __PROJECT_NAME__ . | xargs -0 sed -i "s/__PROJECT_NAME__/${name}/g"
-    find . -depth -name '*__PROJECT_NAME__*' | while read -r p; do
-      mv "${p}" "${p//__PROJECT_NAME__/${name}}"
+    grep -rlZ -- "${placeholder}" . | xargs -0 -r sed -i "s|${placeholder}|${escaped}|g"
+    find . -depth -name "*${placeholder}*" | while read -r p; do
+      mv "${p}" "${p//${placeholder}/${value}}"
     done
   )
+}
+
+# mkprj_ask prints the value for key: a --set override, else the answer
+# to an interactive prompt, else the default when stdin is no terminal.
+mkprj_ask() {
+  local key="$1" default="$2" prompt="$3" answer
+  if [ -n "${overrides[${key}]+set}" ]; then
+    printf '%s' "${overrides[${key}]}"
+    return
+  fi
+  if [ ! -t 0 ]; then
+    printf '%s' "${default}"
+    return
+  fi
+  read -r -p "${prompt} [${default}]: " answer
+  printf '%s' "${answer:-${default}}"
+}
+
+# mkprj_check_overrides fails on --set keys the template does not know,
+# so typos don't vanish silently.
+mkprj_check_overrides() {
+  local known="$1" key status=0
+  for key in "${!overrides[@]}"; do
+    if ! printf '%s\n' "${known}" | grep -qx -- "${key}"; then
+      printf 'mkprj: template has no parameter "%s"\n' "${key}" >&2
+      status=1
+    fi
+  done
+  return "${status}"
+}
+
+# mkprj_slug turns a value into a DNS-1123 label: lower case, runs of
+# anything else become a single hyphen, no hyphen at either end.
+mkprj_slug() {
+  printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | sed -E -e 's/[^a-z0-9]+/-/g' -e 's/^-+|-+$//g'
+}
+
+# mkprj_record stores an answer as __KEY__ and its slug as __KEY_SLUG__.
+mkprj_record() {
+  answers["$1"]="$2"
+  answers["$1_SLUG"]="$(mkprj_slug "$2")"
+}
+
+# mkprj_expand replaces placeholders of answers given so far in text.
+mkprj_expand() {
+  local text="$1" key
+  for key in "${!answers[@]}"; do
+    text="${text//__${key}__/${answers[${key}]}}"
+  done
+  printf '%s' "${text}"
+}
+
+# mkprj_params asks for the parameters in the template's mkprj.params
+# and removes the file. Defaults may refer to earlier answers.
+mkprj_params() {
+  local dir="$1" file="$1/${params_file}" lines=() line key default prompt keys=""
+  if [ ! -f "${file}" ]; then
+    mkprj_check_overrides ""
+    return
+  fi
+  mapfile -t lines <"${file}"
+  rm "${file}"
+
+  for line in "${lines[@]}"; do
+    IFS='|' read -r key default prompt <<<"${line}"
+    keys+="${key}"$'\n'
+  done
+  mkprj_check_overrides "${keys}" || return 1
+
+  for line in "${lines[@]}"; do
+    IFS='|' read -r key default prompt <<<"${line}"
+    mkprj_record "${key}" "$(mkprj_ask "${key}" "$(mkprj_expand "${default}")" "${prompt}")"
+  done
+}
+
+# mkprj_apply substitutes every recorded answer under dir.
+mkprj_apply() {
+  local dir="$1" key
+  for key in "${!answers[@]}"; do
+    mkprj_substitute "${dir}" "${key}" "${answers[${key}]}"
+  done
 }
 
 # mkprj_git_init stages a fresh git repo, writes .envrc (never shipped by
@@ -75,18 +173,26 @@ mkprj_git_init() {
 # force a re-fetch of the templates repo (see mkprj_list).
 mkprj_new() {
   local refresh_flag=() args=()
-  for arg in "$@"; do
-    if [ "${arg}" = "--refresh" ]; then
-      refresh_flag=(--refresh)
-    else
-      args+=("${arg}")
-    fi
+  while [ $# -gt 0 ]; do
+    case "$1" in
+    --refresh) refresh_flag=(--refresh) ;;
+    --set)
+      if [[ "${2:-}" != *=* ]]; then
+        printf 'mkprj: --set needs KEY=VALUE\n' >&2
+        return 1
+      fi
+      overrides["${2%%=*}"]="${2#*=}"
+      shift
+      ;;
+    *) args+=("$1") ;;
+    esac
+    shift
   done
 
   local template="${args[0]:-}" dest="${args[1]:-}"
 
   if [ -z "${template}" ] || [ -z "${dest}" ]; then
-    printf 'usage: mkprj new [--refresh] <template> <dest-path>\n' >&2
+    printf 'usage: mkprj new [--refresh] [--set KEY=VALUE]... <template> <dest-path>\n' >&2
     return 1
   fi
   if [ -e "${dest}" ]; then
@@ -102,7 +208,12 @@ mkprj_new() {
     printf 'mkprj: using "%s" as the project identifier (hyphens become underscores)\n' "${name}" >&2
   fi
 
-  mkprj_substitute "${dest}" "${name}"
+  mkprj_record PROJECT_NAME "${name}"
+  if ! mkprj_params "${dest}"; then
+    rm -rf -- "${dest}"
+    return 1
+  fi
+  mkprj_apply "${dest}"
   mkprj_git_init "${dest}"
 }
 

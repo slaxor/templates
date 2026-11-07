@@ -123,7 +123,8 @@ deletes the file. Each answer also exists as `__KEY_SLUG__` (lower case,
 DNS-safe), `__KEY_DOMAIN__` (underscores become dots, leading `www.`
 dropped) and `__KEY_STEM__` (that domain without its TLD). Defaults may
 use `__PROJECT_NAME__`, `__PROJECT_DIR__` (the directory name before
-sanitizing) and earlier answers.
+sanitizing) and earlier answers. A default that refers to an empty answer
+is empty.
 Answer up front with:
 
 ```sh

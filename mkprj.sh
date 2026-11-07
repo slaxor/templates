@@ -23,9 +23,10 @@ mkprj asks for each value (or takes the default when stdin is not a
 terminal), replaces __KEY__ in contents and filenames, then deletes the
 file. Every answer is also available as __KEY_SLUG__ (DNS-safe) and
 __KEY_DOMAIN__ (underscores become dots, leading www. dropped) and
-__KEY_STEM__ (that domain without its TLD), and defaults may use
-earlier answers. __PROJECT_DIR__ is the unsanitized
-directory name. --set KEY=VALUE answers up front.
+__KEY_STEM__ (that domain without its TLD). Defaults may use earlier
+answers; a default referring to an empty answer is empty.
+__PROJECT_DIR__ is the unsanitized directory name. --set KEY=VALUE
+answers up front.
 
 nix caches the resolved revision of a remote flake ref, so after pushing
 new templates to the repo, mkprj may not see them until the cache expires.
@@ -126,9 +127,14 @@ mkprj_record() {
 }
 
 # mkprj_expand replaces placeholders of answers given so far in text.
+# Text referring to an empty answer expands to nothing, so a default
+# like __FEDI_PROFILE__/feed.rss stays empty without a profile.
 mkprj_expand() {
   local text="$1" key
   for key in "${!answers[@]}"; do
+    if [ -z "${answers[${key}]}" ] && [[ "${text}" == *"__${key}__"* ]]; then
+      return
+    fi
     text="${text//__${key}__/${answers[${key}]}}"
   done
   printf '%s' "${text}"

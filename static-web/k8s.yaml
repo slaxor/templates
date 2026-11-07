@@ -83,7 +83,7 @@ metadata:
 spec:
   redirectRegex:
     regex: ^https?://[^/]+(.*)
-    replacement: https://__DOMAIN__${1}
+    replacement: https://www.__DOMAIN__${1}
     permanent: true
 ---
 apiVersion: traefik.io/v1alpha1
@@ -94,12 +94,12 @@ metadata:
 spec:
   entryPoints: [websecure]
   routes:
-    - match: Host(`__DOMAIN__`)
+    - match: Host(`www.__DOMAIN__`)
       kind: Rule
       services:
         - name: web
           port: http
-    - match: Host(`www.__DOMAIN__`)
+    - match: Host(`__DOMAIN__`)
       kind: Rule
       middlewares:
         - name: to-canonical

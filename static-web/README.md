@@ -1,6 +1,6 @@
 # __PROJECT_NAME__
 
-Static site for https://__DOMAIN__, built with [Zola](https://www.getzola.org)
+Static site for https://www.__DOMAIN__, built with [Zola](https://www.getzola.org)
 and served by [static-web-server](https://static-web-server.net) on Kubernetes.
 
 ## Layout
@@ -10,7 +10,7 @@ and served by [static-web-server](https://static-web-server.net) on Kubernetes.
 - `templates/` — Tera 2 templates, shared bits in `partials/`
 - `static/` — copied verbatim, `style.css` lives here
 - `k8s.yaml` — namespace `__NAMESPACE__`, deployment, service, cert-manager
-  certificate and Traefik route; `www.__DOMAIN__` redirects to `__DOMAIN__`
+  certificate and Traefik route; `__DOMAIN__` redirects to `www.__DOMAIN__`
 - `Containerfile` — `public/` on top of static-web-server
 
 The flake follows nixos-unstable on purpose: Zola 0.23 switched to Tera 2,

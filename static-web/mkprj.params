@@ -1,9 +1,9 @@
-DOMAIN|__PROJECT_DIR_DOMAIN__|Domain (FQDN, www. redirects to it)
+DOMAIN|__PROJECT_DIR_DOMAIN__|Domain (without www., redirects to www.)
 SITE_TITLE|__DOMAIN_STEM__|Site title
 SITE_DESCRIPTION||One-line description
 AUTHOR||Author name
 FEDI_PROFILE||Fediverse profile URL (empty for none)
-FEDI_FEED||Fediverse RSS feed URL (empty for none)
+FEDI_FEED|__FEDI_PROFILE__/feed.rss|Fediverse RSS feed URL (Mastodon uses profile URL + .rss)
 NAMESPACE|__DOMAIN_SLUG__|Kubernetes namespace
 IMAGE|git.int.m11s.de/slaxor/__DOMAIN_SLUG__:latest|Container image
 CLUSTER_ISSUER|letsencrypt-prod|cert-manager ClusterIssuer

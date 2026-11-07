@@ -1,4 +1,4 @@
-base_url = "https://__DOMAIN__"
+base_url = "https://www.__DOMAIN__"
 title = "__SITE_TITLE__"
 description = "__SITE_DESCRIPTION__"
 default_language = "en"

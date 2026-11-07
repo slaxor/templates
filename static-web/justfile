@@ -10,13 +10,15 @@ build:
 check:
     zola check
 
-image: build
+image:
     {{oci}} build -t {{image}} -f Containerfile .
 
 push: image
     {{oci}} push {{image}}
 
-deploy: push
+rollout:
     kubectl apply -f k8s.yaml
     kubectl -n __NAMESPACE__ rollout restart deployment/web
     kubectl -n __NAMESPACE__ rollout status deployment/web
+
+deploy: push rollout

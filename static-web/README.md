@@ -11,7 +11,9 @@ and served by [static-web-server](https://static-web-server.net) on Kubernetes.
 - `static/` — copied verbatim, `style.css` lives here
 - `k8s.yaml` — namespace `__NAMESPACE__`, deployment, service, cert-manager
   certificate and Traefik route; `__DOMAIN__` redirects to `www.__DOMAIN__`
-- `Containerfile` — `public/` on top of static-web-server
+- `Containerfile` — builds the site with Zola, serves it with static-web-server
+- `.gitea/workflows/image.yaml` — builds and pushes the image on every push
+  to master
 
 The flake follows nixos-unstable on purpose: Zola 0.23 switched to Tera 2,
 and the templates use its syntax.
@@ -37,13 +39,19 @@ just build   # renders to public/
 
 ## Deploy
 
+Pushing to master makes the Gitea runner build and push `__IMAGE__`. It
+needs two repository secrets: `REGISTRY_USER` and `REGISTRY_TOKEN` (an
+access token with package write scope). Then roll it out:
+
 ```sh
-just deploy  # build, push __IMAGE__, apply k8s.yaml, restart
+just rollout  # apply k8s.yaml, restart, wait
 ```
 
-`OCI=docker just deploy` if podman is not your container tool. The image
-is built outside nix on purpose: the fediverse feed is fetched at build
-time, which the nix sandbox would block.
+Without CI, `just deploy` does build, push and rollout locally
+(`OCI=docker just deploy` if podman is not your container tool).
+
+The image is built in a container rather than with nix on purpose: the
+fediverse feed is fetched at build time, which the nix sandbox would block.
 
 ## License
 

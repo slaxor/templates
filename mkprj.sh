@@ -21,8 +21,11 @@ commands:
 Templates may ship a mkprj.params file with lines of KEY|default|prompt.
 mkprj asks for each value (or takes the default when stdin is not a
 terminal), replaces __KEY__ in contents and filenames, then deletes the
-file. Every answer is also available as __KEY_SLUG__ (DNS-safe), and
-defaults may use earlier answers. --set KEY=VALUE answers up front.
+file. Every answer is also available as __KEY_SLUG__ (DNS-safe) and
+__KEY_DOMAIN__ (underscores become dots, leading www. dropped) and
+__KEY_STEM__ (that domain without its TLD), and defaults may use
+earlier answers. __PROJECT_DIR__ is the unsanitized
+directory name. --set KEY=VALUE answers up front.
 
 nix caches the resolved revision of a remote flake ref, so after pushing
 new templates to the repo, mkprj may not see them until the cache expires.
@@ -60,7 +63,7 @@ mkprj_substitute() {
   escaped="$(mkprj_sed_escape "${value}")"
   (
     cd "${dir}" || exit 1
-    grep -rlZ -- "${placeholder}" . | xargs -0 -r sed -i "s|${placeholder}|${escaped}|g"
+    { grep -rlZ -- "${placeholder}" . || [ $? -eq 1 ]; } | xargs -0 -r sed -i "s|${placeholder}|${escaped}|g"
     find . -depth -name "*${placeholder}*" | while read -r p; do
       mv "${p}" "${p//${placeholder}/${value}}"
     done
@@ -102,10 +105,24 @@ mkprj_slug() {
   printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | sed -E -e 's/[^a-z0-9]+/-/g' -e 's/^-+|-+$//g'
 }
 
-# mkprj_record stores an answer as __KEY__ and its slug as __KEY_SLUG__.
+# mkprj_domain reads a value as a domain written with underscores
+# (www_slaxor_de -> slaxor.de); a leading www. is dropped.
+mkprj_domain() {
+  printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | tr '_' '.' | sed -e 's/^www\.//'
+}
+
+# mkprj_stem is mkprj_domain without the TLD (www_slaxor_de -> slaxor).
+mkprj_stem() {
+  mkprj_domain "$1" | sed -e 's/\.[^.]*$//'
+}
+
+# mkprj_record stores an answer as __KEY__ plus its __KEY_SLUG__,
+# __KEY_DOMAIN__ and __KEY_STEM__ variants.
 mkprj_record() {
   answers["$1"]="$2"
   answers["$1_SLUG"]="$(mkprj_slug "$2")"
+  answers["$1_DOMAIN"]="$(mkprj_domain "$2")"
+  answers["$1_STEM"]="$(mkprj_stem "$2")"
 }
 
 # mkprj_expand replaces placeholders of answers given so far in text.
@@ -209,6 +226,7 @@ mkprj_new() {
   fi
 
   mkprj_record PROJECT_NAME "${name}"
+  mkprj_record PROJECT_DIR "$(basename "${dest}")"
   if ! mkprj_params "${dest}"; then
     rm -rf -- "${dest}"
     return 1

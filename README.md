@@ -120,7 +120,10 @@ KEY|default|prompt
 mkprj asks for each value (Enter takes the default; without a terminal the
 default is used silently), replaces `__KEY__` in contents and filenames, and
 deletes the file. Each answer also exists as `__KEY_SLUG__` (lower case,
-DNS-safe), and defaults may use `__PROJECT_NAME__` and earlier answers.
+DNS-safe), `__KEY_DOMAIN__` (underscores become dots, leading `www.`
+dropped) and `__KEY_STEM__` (that domain without its TLD). Defaults may
+use `__PROJECT_NAME__`, `__PROJECT_DIR__` (the directory name before
+sanitizing) and earlier answers.
 Answer up front with:
 
 ```sh

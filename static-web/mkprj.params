@@ -1,5 +1,5 @@
-DOMAIN|__PROJECT_NAME__|Domain (FQDN, www. redirects to it)
-SITE_TITLE|__DOMAIN__|Site title
+DOMAIN|__PROJECT_DIR_DOMAIN__|Domain (FQDN, www. redirects to it)
+SITE_TITLE|__DOMAIN_STEM__|Site title
 SITE_DESCRIPTION||One-line description
 AUTHOR||Author name
 FEDI_PROFILE||Fediverse profile URL (empty for none)

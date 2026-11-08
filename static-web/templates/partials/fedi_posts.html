@@ -1,13 +1,11 @@
-{% set feed = load_data(url=config.extra.fedi_feed, format="xml", required=false) %}
-<ul class="fedi">
+{% set feed = load_data(url=config.extra.fedi_feed, format="xml", headers=["Accept=application/rss+xml"], required=false) %}
 {% if feed %}
 {% for item in feed.rss.channel.item[:config.extra.fedi_posts_shown] %}
-  <li>
-    <a href="{{ item.link }}">{{ item.pubDate }}</a><br>
-    {{ item.description | striptags | truncate(length=200) | safe }}
-  </li>
+<article class="toot">
+  {{ item.encoded | safe }}
+  <a class="permalink" href="{{ item.link }}">zum Beitrag</a>
+</article>
 {% endfor %}
 {% else %}
-  <li class="muted">Feed unavailable{% if config.extra.fedi_profile %}, see <a href="{{ config.extra.fedi_profile }}">the profile</a>{% endif %}.</li>
+<p class="muted">Feed gerade nicht erreichbar{% if config.extra.fedi_profile %}, siehe <a href="{{ config.extra.fedi_profile }}">Profil</a>{% endif %}.</p>
 {% endif %}
-</ul>

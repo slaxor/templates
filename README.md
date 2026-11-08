@@ -34,7 +34,7 @@ PlatformIO for STM32F103C8T6 Blue Pill
 shell-tool
 Standard Bash-based development environment
 static-web
-Static website with Zola, optional fediverse feed
+Personal page with Zola: name, links, fediverse feed, k8s deploy
 typst-doc
 Typst document environment for writing and building .typst files
 🚀 Recommended Workflow \(mkprj\)

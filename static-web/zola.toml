@@ -1,19 +1,22 @@
 base_url = "https://www.__DOMAIN__"
 title = "__SITE_TITLE__"
 description = "__SITE_DESCRIPTION__"
-default_language = "en"
+default_language = "de"
 
 compile_sass = false
 build_search_index = false
-generate_feeds = true
-feed_filenames = ["atom.xml"]
+generate_feeds = false
 
 [markdown.highlighting]
-light_theme = "github-light"
-dark_theme = "github-dark"
+theme = "github-dark"
 
 [extra]
 author = "__AUTHOR__"
 fedi_profile = "__FEDI_PROFILE__"
 fedi_feed = "__FEDI_FEED__"
-fedi_posts_shown = 5
+fedi_handle = "__FEDI_HANDLE__"
+fedi_posts_shown = 10
+
+[[extra.links]]
+name = "Fediverse"
+url = "__FEDI_PROFILE__"

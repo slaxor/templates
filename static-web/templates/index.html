@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 
-{% block content %}
-{{ section.content | safe }}
+{% block header %}{% endblock %}
 
-<h2>Latest notes</h2>
-{% set notes = get_section(path="notes/_index.md") %}
-{% set pages = notes.pages[:5] %}
-{% include "partials/page_list.html" %}
+{% block content %}
+<section class="hero">
+  <h1>{{ config.title }}</h1>
+  {% if config.extra.fedi_handle and config.extra.fedi_profile %}<p class="handle"><a rel="me" href="{{ config.extra.fedi_profile }}">{{ config.extra.fedi_handle }}</a></p>{% endif %}
+  <nav class="links">
+    {% for link in config.extra.links %}{% if link.url %}<a href="{{ link.url }}">{{ link.name }}</a>{% endif %}{% endfor %}
+  </nav>
+</section>
 
 {% if config.extra.fedi_feed %}
-<h2>Latest on fedi</h2>
 {% include "partials/fedi_posts.html" %}
 {% endif %}
 {% endblock %}

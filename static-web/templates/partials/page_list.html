@@ -2,9 +2,9 @@
 {% for page in pages %}
   <li>
     <a href="{{ page.permalink }}">{{ page.title }}</a>
-    {% if page.date %}<time datetime="{{ page.date }}">{{ page.date | date(format="%Y-%m-%d") }}</time>{% endif %}
+    {% if page.date %}<time datetime="{{ page.date }}">{{ page.date | date(locale="de", format="d. MMMM y") }}</time>{% endif %}
   </li>
 {% else %}
-  <li class="muted">Nothing here yet.</li>
+  <li class="muted">Noch nichts hier.</li>
 {% endfor %}
 </ul>

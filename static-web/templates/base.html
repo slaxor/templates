@@ -7,23 +7,18 @@
   <meta name="description" content="{{ config.description }}">
   <meta name="author" content="{{ config.extra.author }}">
   <link rel="stylesheet" href="{{ get_url(path='style.css') }}">
-  <link rel="alternate" type="application/atom+xml" title="{{ config.title }}" href="{{ get_url(path='atom.xml') }}">
   {% if config.extra.fedi_profile %}<link rel="me" href="{{ config.extra.fedi_profile }}">{% endif %}
 </head>
 <body>
+  {% block header %}
   <header>
     <a class="home" href="{{ get_url(path='/') }}">{{ config.title }}</a>
-    <nav>
-      <a href="{{ get_url(path='@/notes/_index.md') }}">notes</a>
-      {% if config.extra.fedi_profile %}<a rel="me" href="{{ config.extra.fedi_profile }}">fedi</a>{% endif %}
-    </nav>
   </header>
+  {% endblock %}
   <main>
     {% block content %}{% endblock %}
   </main>
   <footer>
-    <a href="{{ get_url(path='@/impressum.md') }}">impressum</a>
-    <a href="{{ get_url(path='atom.xml') }}">atom</a>
     <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
   </footer>
 </body>

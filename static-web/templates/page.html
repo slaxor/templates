@@ -5,7 +5,7 @@
 {% block content %}
 <article>
   <h1>{{ page.title }}</h1>
-  {% if page.date %}<time datetime="{{ page.date }}">{{ page.date | date(format="%Y-%m-%d") }}</time>{% endif %}
+  {% if page.date %}<time datetime="{{ page.date }}">{{ page.date | date(locale="de", format="d. MMMM y") }}</time>{% endif %}
   {{ page.content | safe }}
 </article>
 {% endblock %}

@@ -1,5 +1,6 @@
-oci := env("OCI", "podman")
 image := "__IMAGE__"
+local_image := "localhost/__NAMESPACE__:local"
+base_image := "ghcr.io/static-web-server/static-web-server:2"
 
 serve:
     zola serve --drafts
@@ -10,15 +11,25 @@ build:
 check:
     zola check
 
-image:
-    {{oci}} build -t {{image}} -f Containerfile .
+_append +crane_args: build
+    tar -cf site.tar --owner=0 --group=0 public
+    crane append --platform linux/amd64 -b {{base_image}} -f site.tar {{crane_args}}
 
-push: image
-    {{oci}} push {{image}}
+publish: (_append "-t" image)
 
-rollout:
+image: (_append "-t" local_image "-o" "image.tar")
+
+run: image
+    podman load -i image.tar
+    podman run --rm -p 8080:8080 -e SERVER_PORT=8080 {{local_image}}
+
+apply:
     kubectl apply -f k8s.yaml
+
+restart:
     kubectl -n __NAMESPACE__ rollout restart deployment/web
     kubectl -n __NAMESPACE__ rollout status deployment/web
 
-deploy: push rollout
+rollout: apply restart
+
+deploy: publish rollout

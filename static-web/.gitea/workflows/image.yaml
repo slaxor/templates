@@ -7,20 +7,34 @@ on:
 
 jobs:
   image:
-    runs-on: ubuntu-latest
+    runs-on: nix
     env:
       IMAGE: __IMAGE__
+      DOCKER_CONFIG: ${{ github.workspace }}/.docker-config
+      KUBECONFIG: ${{ github.workspace }}/.kubeconfig
     steps:
       - uses: actions/checkout@v4
 
       - name: Log in to registry
         env:
-          REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
+          REGISTRY_USER: ${{ vars.REGISTRY_USER }}
           REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
-        run: printf '%s' "${REGISTRY_TOKEN}" | docker login "${IMAGE%%/*}" -u "${REGISTRY_USER}" --password-stdin
+        run: |
+          : "${REGISTRY_USER:?repository variable REGISTRY_USER is not set}"
+          : "${REGISTRY_TOKEN:?repository secret REGISTRY_TOKEN is not set}"
+          printf '%s' "${REGISTRY_TOKEN}" | nix develop --command crane auth login "${IMAGE%%/*}" -u "${REGISTRY_USER}" --password-stdin
 
-      - name: Build
-        run: docker build -t "${IMAGE}" -f Containerfile .
+      - name: Build and push
+        run: nix develop --command just publish
 
-      - name: Push
-        run: docker push "${IMAGE}"
+      - name: Restart deployment
+        env:
+          KUBECONFIG_DATA: ${{ secrets.KUBECONFIG }}
+        run: |
+          : "${KUBECONFIG_DATA:?repository secret KUBECONFIG is not set}"
+          printf '%s' "${KUBECONFIG_DATA}" > "${KUBECONFIG}"
+          nix develop --command just restart
+
+      - name: Forget credentials
+        if: always()
+        run: rm -rf "${DOCKER_CONFIG}" "${KUBECONFIG}"

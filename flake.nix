@@ -44,7 +44,7 @@
       };
       static-web = {
         path = ./static-web;
-        description = "Static website with Zola, optional fediverse feed";
+        description = "Personal page with Zola: name, links, fediverse feed, k8s deploy";
       };
       typst-doc = {
         path = ./typst-doc;

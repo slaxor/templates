@@ -6,7 +6,7 @@
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
     in {
       devShells.x86_64-linux.default = pkgs.mkShell {
-        packages = [ pkgs.zola pkgs.just pkgs.kubectl ];
+        packages = [ pkgs.zola pkgs.just pkgs.crane pkgs.kubectl ];
       };
     };
 }
